@@ -1,0 +1,61 @@
+{
+  "gameId": "catan",
+  "steps": [
+    {
+      "id": 1,
+      "phase": "theme_and_goal",
+      "title": "What is Catan?",
+      "content": "You're settlers on the island of Catan, competing to build the most successful colony. The island is made up of hexagonal tiles that produce different resources. Your goal is to be the first player to reach **10 victory points** by building settlements, cities, and roads, and by collecting special cards.",
+      "estimated_seconds": 30
+    },
+    {
+      "id": 2,
+      "phase": "components",
+      "title": "What's on the Table",
+      "content": "Let's look at what you have:\n\n- **19 terrain hexes** - These make up the island. Each type produces a resource:\n  - Hills = Brick, Forest = Lumber, Mountains = Ore, Fields = Grain, Pasture = Wool, Desert = Nothing\n- **Number tokens** (2-12) - Placed on hexes, determine when resources are produced\n- **5 settlements + 4 cities** per player (in your color)\n- **15 roads** per player\n- **Resource cards** - Brick, Lumber, Ore, Grain, Wool\n- **Development cards** - Knights, Victory Points, and special cards\n- **2 dice**\n- **The Robber** - A gray pawn that starts on the desert",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 3,
+      "phase": "setup",
+      "title": "Setting Up the Board",
+      "content": "1. **Arrange the hex tiles** in the frame to form the island (use the beginner layout from the rulebook for your first game)\n2. **Place number tokens** on the hexes (follow the letter order shown in the rulebook). The desert gets no number.\n3. **Place the Robber** on the desert hex\n4. Each player takes **5 settlements, 4 cities, and 15 roads** in their color\n5. Starting with the youngest player, each player places **1 settlement at any intersection** and **1 road** connected to it\n6. Then in **reverse order**, each player places a **2nd settlement + road**\n7. Each player collects **1 resource card** for each hex touching their 2nd settlement",
+      "estimated_seconds": 90
+    },
+    {
+      "id": 4,
+      "phase": "turn_structure",
+      "title": "What Happens on Your Turn",
+      "content": "Every turn has 3 phases:\n\n**1. Roll the Dice**\nRoll both dice and add them together. Every hex with that number produces resources for ALL players who have a settlement or city touching it.\n- Settlement = 1 resource card\n- City = 2 resource cards\n\n**2. Trade** (optional)\n- Trade with other players (any deal you can agree on)\n- Trade with the bank at 4:1 (or better if you have a port)\n\n**3. Build** (optional)\n- Spend resource cards to build roads, settlements, cities, or buy development cards",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 5,
+      "phase": "core_actions",
+      "title": "Building Costs",
+      "content": "Here's what you can build and what it costs:\n\n| Build | Cost | Worth |\n|-------|------|-------|\n| **Road** | 1 Brick + 1 Lumber | Extends your network |\n| **Settlement** | 1 Brick + 1 Lumber + 1 Grain + 1 Wool | 1 Victory Point |\n| **City** (upgrade a settlement) | 3 Ore + 2 Grain | 2 Victory Points |\n| **Development Card** | 1 Ore + 1 Grain + 1 Wool | Various effects |\n\n**Key rules:**\n- Settlements must be at least **2 roads apart** from any other settlement\n- You can only build settlements along **your own road network**\n- Cities replace an existing settlement (you get the settlement piece back)",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 6,
+      "phase": "core_actions",
+      "title": "The Robber (Rolling a 7)",
+      "content": "When anyone rolls a **7**, two things happen:\n\n**1. Discard:** Any player with more than 7 resource cards must discard half (rounded down)\n\n**2. Move the Robber:** The player who rolled 7 moves the Robber to any hex. That hex **stops producing resources** until the Robber moves again. The player also **steals 1 random card** from any player with a settlement/city on that hex.\n\nYou can also use a **Knight development card** to move the Robber on your turn.",
+      "estimated_seconds": 45
+    },
+    {
+      "id": 7,
+      "phase": "core_actions",
+      "title": "Special Bonuses",
+      "content": "Two bonus cards are up for grabs:\n\n**Longest Road (2 VP):** The first player to build a continuous road of **5+ segments** claims this card. Another player can steal it by building a longer road.\n\n**Largest Army (2 VP):** The first player to play **3 Knight cards** claims this card. Another player can steal it by playing more Knights.\n\nThese can change hands during the game!",
+      "estimated_seconds": 30
+    },
+    {
+      "id": 8,
+      "phase": "walkthrough",
+      "title": "Let's Play a Practice Round",
+      "content": "Let's walk through a sample turn:\n\n1. **You roll the dice** and get an 8. Check which hexes have the number 8 - everyone with settlements/cities touching those hexes collects resources.\n\n2. **Look at your hand.** Do you have enough to build anything? Check the building costs.\n\n3. **Want to trade?** Ask other players: \"Anyone have Brick? I'll trade Wool for it.\"\n\n4. **Build!** If you have 1 Brick + 1 Lumber, you could build a Road. Place it connected to one of your existing roads or settlements.\n\n5. **End your turn.** Pass the dice to the left.\n\nThat's it! The first player to **10 Victory Points** wins! Remember: Settlements (1 VP), Cities (2 VP), Longest Road (2 VP), Largest Army (2 VP), VP Development Cards (1 VP each).",
+      "estimated_seconds": 60
+    }
+  ]
+}

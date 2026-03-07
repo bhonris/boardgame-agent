@@ -1,0 +1,54 @@
+{
+  "gameId": "ticket-to-ride",
+  "steps": [
+    {
+      "id": 1,
+      "phase": "theme_and_goal",
+      "title": "What is Ticket to Ride?",
+      "content": "You're a railroad baron in early 1900s America! You're racing to claim train routes across the country, connecting cities to complete secret destination tickets. The player who builds the best rail network — connecting the most valuable routes — wins!\n\n**Goal:** Score the most points by claiming routes on the map and completing destination tickets.",
+      "estimated_seconds": 30
+    },
+    {
+      "id": 2,
+      "phase": "components",
+      "title": "What's on the Table",
+      "content": "- **The board** - A map of North America with cities connected by colored routes\n- **45 train cars** per player (in your color)\n- **Train cards** (8 colors + rainbow Locomotives that are wild)\n- **Destination Ticket cards** - Secret goals connecting two cities\n- **Scoring markers** - Track your points around the board edge\n\nEach route on the map has a **color** and a **length** (1-6 spaces). You'll claim routes by playing matching colored train cards.",
+      "estimated_seconds": 45
+    },
+    {
+      "id": 3,
+      "phase": "setup",
+      "title": "Setting Up",
+      "content": "1. Each player takes **45 train cars** and a **scoring marker** (place at 0)\n2. Shuffle the **Train Card deck**, deal **4 cards** to each player\n3. Flip **5 Train Cards** face-up next to the deck\n4. Shuffle the **Destination Ticket deck**, deal **3 tickets** to each player\n5. Each player must **keep at least 2** destination tickets (you may keep all 3). Return any unwanted tickets to the bottom of the deck.\n\n**Important:** Keep your destination tickets secret! Don't reveal which cities you're trying to connect.",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 4,
+      "phase": "turn_structure",
+      "title": "What Happens on Your Turn",
+      "content": "On your turn, do **exactly one** of these three actions:\n\n**1. Draw Train Cards** - Take 2 cards (from the face-up row or the top of the deck)\n- If you take a face-up Locomotive (wild), that's your entire turn — you only get 1 card\n\n**2. Claim a Route** - Play matching colored cards to claim a route on the map\n- Place your train cars on the route\n- Score points immediately based on route length\n\n**3. Draw Destination Tickets** - Draw 3 new tickets, keep at least 1\n\nThat's it — pick one action per turn!",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 5,
+      "phase": "core_actions",
+      "title": "Claiming Routes & Scoring",
+      "content": "To claim a route, play cards matching the route's **color** and **length**:\n- A 3-space blue route needs 3 blue cards\n- **Locomotives (rainbow)** are wild — use them as any color\n- **Gray routes** can be claimed with any single color\n\n**Points scored by route length:**\n| Length | Points |\n|--------|--------|\n| 1 | 1 |\n| 2 | 2 |\n| 3 | 4 |\n| 4 | 7 |\n| 5 | 10 |\n| 6 | 15 |\n\nLonger routes are worth much more! A 6-space route is worth 15 points.",
+      "estimated_seconds": 45
+    },
+    {
+      "id": 6,
+      "phase": "core_actions",
+      "title": "Destination Tickets",
+      "content": "Each destination ticket shows **two cities** and a **point value**.\n\n- **Completed tickets** (both cities connected by your routes) = **add** those points to your score at game end\n- **Incomplete tickets** = **subtract** those points from your score!\n\nYou don't have to use a direct route — as long as your trains connect the two cities through any path, the ticket is complete.\n\n**Strategy tip:** Look at your tickets early and plan a path that completes multiple tickets efficiently!",
+      "estimated_seconds": 45
+    },
+    {
+      "id": 7,
+      "phase": "walkthrough",
+      "title": "Game End & First Round",
+      "content": "**Game End:** When any player has **2 or fewer train cars** remaining, every player (including that player) gets **one final turn**. Then:\n1. Add points for completed destination tickets\n2. Subtract points for incomplete tickets\n3. **Longest Continuous Path** bonus: 10 points to the player with the longest connected route\n\n**Let's start!** Look at your destination tickets and your 4 train cards:\n- Which cities do you need to connect?\n- Do your current cards match any routes along the way?\n- Your first few turns: probably **draw cards** to build up your hand, then start **claiming routes** toward your destinations.\n\nHave fun building your railroad empire!",
+      "estimated_seconds": 60
+    }
+  ]
+}

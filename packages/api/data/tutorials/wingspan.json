@@ -1,0 +1,54 @@
+{
+  "gameId": "wingspan",
+  "steps": [
+    {
+      "id": 1,
+      "phase": "theme_and_goal",
+      "title": "What is Wingspan?",
+      "content": "You're bird enthusiasts — researchers, bird watchers, and collectors — seeking to discover and attract the best birds to your wildlife preserves. Each bird you play has a real species, real habitat, and special powers!\n\n**Goal:** Score the most points over **4 rounds** by playing bird cards, laying eggs, collecting food, and achieving bonus objectives.",
+      "estimated_seconds": 30
+    },
+    {
+      "id": 2,
+      "phase": "components",
+      "title": "What's on the Table",
+      "content": "- **Your player mat** - Has 3 habitat rows: Forest, Grassland, Wetland (each with 5 slots for birds)\n- **Bird cards** - 170 unique birds with food costs, habitats, nest types, egg capacity, point values, and powers\n- **Food dice** (in the birdfeeder dice tower) - 5 custom dice showing food types\n- **Miniature eggs** - Used for laying eggs and as a resource\n- **Food tokens** - Invertebrate, Seed, Fish, Fruit, Rodent (+ wild)\n- **Bonus cards** - End-of-game scoring goals\n- **Round-end goal tiles** - Competitive objectives each round\n- **Bird tray** - 3 face-up bird cards available to draw",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 3,
+      "phase": "setup",
+      "title": "Setting Up",
+      "content": "1. Each player takes a **player mat** and **8 action cubes** of their color\n2. Shuffle bird cards, deal **5 to each player** and place 3 face-up in the bird tray\n3. Deal each player **2 bonus cards** — keep 1, discard the other\n4. Give each player **5 food tokens** (1 of each type)\n5. Now **choose:** you start with 5 birds and 5 food, but must discard down. For each bird you keep, discard 1 food. (Keep 3 birds + 2 food? Or 2 birds + 3 food? Your choice!)\n6. Place a **round-end goal tile** for each of the 4 rounds\n7. Roll all 5 **food dice** into the birdfeeder",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 4,
+      "phase": "turn_structure",
+      "title": "What Happens on Your Turn",
+      "content": "On your turn, place **one action cube** on your player mat to do one of these 4 actions:\n\n**1. Play a Bird** (top of any row) - Pay its food cost and egg cost, place it in the matching habitat row\n\n**2. Gain Food** (Forest row) - Take food dice from the birdfeeder. Activate Forest bird powers left-to-right.\n\n**3. Lay Eggs** (Grassland row) - Place eggs on your birds (up to their egg limit). Activate Grassland bird powers.\n\n**4. Draw Bird Cards** (Wetland row) - Draw from the tray or deck. Activate Wetland bird powers.\n\n**Key insight:** As you add birds to a row, that action gets **stronger** because you activate all birds in the row!",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 5,
+      "phase": "core_actions",
+      "title": "Playing Birds & Bird Powers",
+      "content": "**To play a bird:**\n1. Choose a bird from your hand\n2. Check its **habitat** icon — it can only go in that row (some birds fit multiple habitats)\n3. Pay the **food cost** shown on the bird card (discard food tokens)\n4. If it's not in the leftmost column, also pay an **egg cost** (1 egg for columns 2-3, 2 eggs for columns 4-5)\n5. Place the bird in the leftmost empty space in the correct row\n\n**Bird Powers** (3 types):\n- **When Played** (brown) — Happens once, when you first play the bird\n- **When Activated** (pink) — Happens every time you use that row's action\n- **Once Between Turns** (teal) — Can trigger on other players' turns",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 6,
+      "phase": "core_actions",
+      "title": "Rounds & Scoring",
+      "content": "The game lasts **4 rounds**. Each round you have:\n- Round 1: **8 turns** (8 action cubes)\n- Round 2: **7 turns** (1 cube goes to round-end goal)\n- Round 3: **6 turns**\n- Round 4: **5 turns**\n\n**At round end:** Score the round-end goal (e.g., \"most birds in Wetland\"). Place one action cube on the goal board.\n\n**Final scoring adds up:**\n- Points printed on your bird cards\n- Bonus card points\n- Round-end goal points\n- 1 point per egg on your birds\n- 1 point per food cached on birds\n- 1 point per tucked card",
+      "estimated_seconds": 45
+    },
+    {
+      "id": 7,
+      "phase": "walkthrough",
+      "title": "Let's Play Your First Turn",
+      "content": "Look at your starting birds and food. Here's a good first-turn plan:\n\n1. **Look at your bird cards' food costs.** Do you have the right food to play any of them?\n2. If yes: **Play a bird!** Put it in the matching habitat. You'll have powers to activate on future turns.\n3. If no: **Gain food** from the birdfeeder. Pick dice showing the food you need.\n\n**Early strategy tips:**\n- Play birds early — they make your actions more powerful as the game goes on\n- Forest birds help you gain more food\n- Grassland birds help you lay more eggs (needed to play birds in later columns)\n- Wetland birds help you draw more bird cards\n\nDon't worry about memorizing everything — the player mat guides you through each action step by step!",
+      "estimated_seconds": 60
+    }
+  ]
+}
