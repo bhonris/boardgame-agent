@@ -40,7 +40,6 @@ Relevant rulebook content:
 def get_teacher_agent() -> Agent:
     return Agent(
         settings.pydantic_ai_model,
-        system_prompt=TEACHER_SYSTEM_PROMPT,
         output_type=str,
     )
 
@@ -93,9 +92,16 @@ Relevant rulebook content:
 def get_realtime_agent() -> Agent:
     return Agent(
         settings.pydantic_ai_model,
-        system_prompt=REALTIME_SYSTEM_PROMPT,
         output_type=str,
     )
+
+
+def format_teacher_prompt(game_title: str, rulebook_context: str) -> str:
+    return TEACHER_SYSTEM_PROMPT.format(game_title=game_title, rulebook_context=rulebook_context)
+
+
+def format_realtime_prompt(game_title: str, rulebook_context: str) -> str:
+    return REALTIME_SYSTEM_PROMPT.format(game_title=game_title, rulebook_context=rulebook_context)
 
 
 @lru_cache(maxsize=1)

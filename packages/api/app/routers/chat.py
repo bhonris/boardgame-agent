@@ -12,7 +12,12 @@ from app.config import settings
 from app.database import get_db
 from app.models.base import ChatMode, Game, GameRulebook, MessageRole, RulebookStatus
 from app.schemas.game import ChatRequest
-from app.services.ai_service import get_realtime_agent, get_teacher_agent
+from app.services.ai_service import (
+    format_realtime_prompt,
+    format_teacher_prompt,
+    get_realtime_agent,
+    get_teacher_agent,
+)
 from app.services.session_service import SessionService
 
 router = APIRouter(prefix="/api/games", tags=["chat"])
@@ -56,10 +61,12 @@ async def chat(game_id: str, request: ChatRequest, db: AsyncSession = Depends(ge
                 else:
                     message_history.append(ModelResponse(parts=[TextPart(content=m["content"])]))
 
+            instructions = format_teacher_prompt(game.title, rulebook_text)
             async with get_teacher_agent().run_stream(
                 request.message,
                 message_history=message_history,
                 model=settings.pydantic_ai_model,
+                instructions=instructions,
             ) as result:
                 async for chunk in result.stream_text(delta=True):
                     full_response += chunk
@@ -140,10 +147,12 @@ async def chat_realtime(
             else:
                 prompt = message
 
+            instructions = format_realtime_prompt(game.title, rulebook_text)
             async with get_realtime_agent().run_stream(
                 prompt,
                 message_history=message_history,
                 model=settings.pydantic_ai_model,
+                instructions=instructions,
             ) as result:
                 async for chunk in result.stream_text(delta=True):
                     full_response += chunk

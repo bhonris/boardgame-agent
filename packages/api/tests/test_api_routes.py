@@ -485,3 +485,90 @@ class TestVisionImageFormat:
         assert isinstance(captured_prompt[0], str)
         assert isinstance(captured_prompt[1], BinaryContent)
         assert captured_prompt[1].media_type == "image/jpeg"
+
+
+class TestGameContextInstructions:
+    """Regression: agents must receive game-specific instructions (title + rulebook)."""
+
+    @pytest.mark.asyncio
+    async def test_realtime_agent_receives_game_instructions(
+        self, app_client: AsyncClient, db: AsyncSession, sample_game
+    ):
+        """Verify realtime agent gets instructions containing game title and rulebook."""
+        rulebook = GameRulebook(
+            game_id="catan",
+            status=RulebookStatus.ready,
+            processed_text="Build settlements and roads to earn victory points.",
+        )
+        db.add(rulebook)
+        await db.commit()
+
+        captured_kwargs = {}
+        mock_agent = MagicMock()
+        mock_result = MagicMock()
+
+        async def mock_stream_text(delta=True):
+            yield "OK "
+
+        mock_result.stream_text = mock_stream_text
+
+        @asynccontextmanager
+        async def mock_run_stream(*args, **kwargs):
+            captured_kwargs.update(kwargs)
+            yield mock_result
+
+        mock_agent.run_stream = mock_run_stream
+
+        with patch("app.routers.chat.get_realtime_agent", return_value=mock_agent):
+            response = await app_client.post(
+                "/api/games/catan/chat/realtime",
+                data={"message": "What should I do?"},
+            )
+        assert response.status_code == 200
+
+        # instructions kwarg must contain the game title and rulebook content
+        assert "instructions" in captured_kwargs
+        instructions = captured_kwargs["instructions"]
+        assert "Catan" in instructions
+        assert "Build settlements and roads" in instructions
+
+    @pytest.mark.asyncio
+    async def test_chat_agent_receives_game_instructions(
+        self, app_client: AsyncClient, db: AsyncSession, sample_game
+    ):
+        """Verify teacher agent gets instructions containing game title and rulebook."""
+        rulebook = GameRulebook(
+            game_id="catan",
+            status=RulebookStatus.ready,
+            processed_text="Trade resources to build your empire.",
+        )
+        db.add(rulebook)
+        await db.commit()
+
+        captured_kwargs = {}
+        mock_agent = MagicMock()
+        mock_result = MagicMock()
+
+        async def mock_stream_text(delta=True):
+            yield "OK "
+
+        mock_result.stream_text = mock_stream_text
+
+        @asynccontextmanager
+        async def mock_run_stream(*args, **kwargs):
+            captured_kwargs.update(kwargs)
+            yield mock_result
+
+        mock_agent.run_stream = mock_run_stream
+
+        with patch("app.routers.chat.get_teacher_agent", return_value=mock_agent):
+            response = await app_client.post(
+                "/api/games/catan/chat",
+                json={"message": "How do I win?"},
+            )
+        assert response.status_code == 200
+
+        assert "instructions" in captured_kwargs
+        instructions = captured_kwargs["instructions"]
+        assert "Catan" in instructions
+        assert "Trade resources to build your empire" in instructions
