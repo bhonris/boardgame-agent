@@ -1,0 +1,143 @@
+{
+  "gameSelection": {
+    "title": "Choose a Game to Learn",
+    "subtitle": "Pick a game and I'll teach you how to play, step by step.",
+    "loading": "Loading games...",
+    "errorTitle": "Unable to load games",
+    "errorMessage": "Please make sure the server is running.",
+    "empty": "No games available yet.",
+    "players": "{{min}}-{{max}} players",
+    "playTime": "{{minutes}} min",
+    "complexity": "Complexity: {{weight}}/5"
+  },
+  "tabs": {
+    "tutorial": "Tutorial",
+    "qa": "Q&A",
+    "camera": "Camera",
+    "reference": "Reference",
+    "realtime": "Realtime"
+  },
+  "tutorial": {
+    "loading": "Loading tutorial...",
+    "stepOf": "Step {{current}} of {{total}}",
+    "previous": "Previous",
+    "next": "Next",
+    "phases": {
+      "theme_and_goal": "theme and goal",
+      "components": "components",
+      "setup": "setup",
+      "turn_structure": "turn structure",
+      "core_actions": "core actions",
+      "walkthrough": "walkthrough"
+    }
+  },
+  "chat": {
+    "askAnything": "Ask me anything about {{game}}!",
+    "hint": "e.g., \"Can I trade on my first turn?\" or \"How does scoring work?\"",
+    "placeholder": "Ask about {{game}}...",
+    "thinking": "Thinking...",
+    "send": "Send",
+    "error": "Error: {{message}}",
+    "connectionError": "Connection error. Please try again."
+  },
+  "reference": {
+    "loading": "Loading reference...",
+    "title": "Quick Reference - {{game}}",
+    "types": {
+      "turn_order": "Turn Order",
+      "key_info": "Key Info",
+      "scoring": "Scoring",
+      "setup": "Setup"
+    }
+  },
+  "camera": {
+    "title": "Camera - {{game}}",
+    "openCamera": "Open Camera",
+    "uploadPhoto": "Upload Photo",
+    "capture": "Capture",
+    "cancel": "Cancel",
+    "analyze": "Analyze",
+    "analyzing": "Analyzing...",
+    "retake": "Retake",
+    "cameraError": "Camera access denied. You can upload a photo instead.",
+    "analysisError": "Analysis failed. Please try again with a clearer image.",
+    "relatedRules": "Related Rules",
+    "confidence": "{{level}} confidence",
+    "modes": {
+      "identify": "What is this?",
+      "identifyDesc": "Identify a game component",
+      "read_card": "Read Card",
+      "read_cardDesc": "Read and explain card text",
+      "verify_setup": "Check Setup",
+      "verify_setupDesc": "Verify board setup is correct"
+    }
+  },
+  "voice": {
+    "notSupported": "Speech recognition is not supported in this browser.",
+    "holdToTalk": "Hold to talk",
+    "stopSpeaking": "Stop speaking",
+    "readAloud": "Read aloud"
+  },
+  "realtime": {
+    "inactive": "Inactive",
+    "listening": "Listening...",
+    "processing": "Thinking...",
+    "speaking": "Speaking...",
+    "start": "Start Realtime",
+    "stop": "Stop Realtime",
+    "hintInactive": "Point your camera at the board and tap to start",
+    "hintActive": "Speak naturally — I can see the board and hear you",
+    "cameraError": "Camera access denied. Realtime mode works best with a camera, but you can still use voice.",
+    "speechError": "Speech recognition is not supported in this browser.",
+    "error": "Error: {{message}}",
+    "connectionError": "Connection error."
+  },
+  "setup": {
+    "title": "Setup Checklist",
+    "progress": "{{completed}}/{{total}}",
+    "complete": "Setup complete! You're ready to play.",
+    "empty": "No setup checklist available for this game.",
+    "catan": {
+      "0": "Arrange hex tiles in the frame (use beginner layout)",
+      "1": "Place number tokens on hexes (follow letter order)",
+      "2": "Place the Robber on the desert hex",
+      "3": "Each player takes 5 settlements, 4 cities, 15 roads",
+      "4": "Shuffle and place resource card stacks",
+      "5": "Shuffle development cards",
+      "6": "Place Longest Road and Largest Army cards nearby",
+      "7": "Each player places 1st settlement + road (youngest first)",
+      "8": "Each player places 2nd settlement + road (reverse order)",
+      "9": "Collect resources for 2nd settlement"
+    },
+    "ticket_to_ride": {
+      "0": "Unfold the board in the center of the table",
+      "1": "Each player takes 45 train cars and a scoring marker",
+      "2": "Place scoring markers at 0",
+      "3": "Shuffle Train Card deck, deal 4 to each player",
+      "4": "Flip 5 Train Cards face-up",
+      "5": "Shuffle Destination Tickets, deal 3 to each player",
+      "6": "Each player keeps at least 2 destination tickets"
+    },
+    "wingspan": {
+      "0": "Each player takes a player mat and 8 action cubes",
+      "1": "Shuffle bird deck, deal 5 birds to each player",
+      "2": "Place 3 bird cards face-up in the tray",
+      "3": "Deal 2 bonus cards to each player (keep 1)",
+      "4": "Give each player 5 food tokens (1 of each type)",
+      "5": "Players choose birds/food to keep (discard 1 food per bird kept)",
+      "6": "Place round-end goal tiles for all 4 rounds",
+      "7": "Roll all 5 food dice into the birdfeeder"
+    }
+  },
+  "apiErrors": {
+    "fetchGames": "Failed to fetch games",
+    "gameNotFound": "Game not found",
+    "tutorialNotFound": "Tutorial not found",
+    "referenceNotFound": "Reference data not found",
+    "chatFailed": "Chat request failed",
+    "noBody": "No response body",
+    "realtimeFailed": "Realtime chat request failed",
+    "visionFailed": "Vision analysis failed",
+    "ttsFailed": "TTS request failed"
+  }
+}

@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { streamChat } from '../api/client'
 import { useGameStore } from '../stores/gameStore'
 
 export function ChatInterface() {
+  const { t } = useTranslation()
   const game = useGameStore((s) => s.selectedGame)
   const sessionId = useGameStore((s) => s.sessionId)
   const setSessionId = useGameStore((s) => s.setSessionId)
@@ -51,24 +53,24 @@ export function ChatInterface() {
           }
         } else if (event.event === 'error') {
           const data = JSON.parse(event.data)
-          updateLastMessage(`\n\n_Error: ${data.error}_`)
+          updateLastMessage(`\n\n_${t('chat.error', { message: data.error })}_`)
         }
       }
     } catch (err) {
-      updateLastMessage('\n\n_Connection error. Please try again._')
+      updateLastMessage(`\n\n_${t('chat.connectionError')}_`)
     } finally {
       setIsLoading(false)
       scrollToBottom()
     }
-  }, [input, game, isLoading, sessionId, addMessage, updateLastMessage, setSessionId])
+  }, [input, game, isLoading, sessionId, addMessage, updateLastMessage, setSessionId, t])
 
   return (
     <div className="flex flex-col h-full max-w-3xl mx-auto">
       <div className="flex-1 overflow-y-auto space-y-4 pb-4">
         {messages.length === 0 && (
           <div className="text-center text-gray-400 mt-20">
-            <p className="text-lg">Ask me anything about {game?.title}!</p>
-            <p className="text-sm mt-2">e.g., "Can I trade on my first turn?" or "How does scoring work?"</p>
+            <p className="text-lg">{t('chat.askAnything', { game: game?.title })}</p>
+            <p className="text-sm mt-2">{t('chat.hint')}</p>
           </div>
         )}
         {messages.map((msg) => (
@@ -99,7 +101,7 @@ export function ChatInterface() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-            placeholder={`Ask about ${game?.title ?? 'this game'}...`}
+            placeholder={t('chat.placeholder', { game: game?.title ?? '' })}
             disabled={isLoading}
             className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50 text-sm min-h-[48px]"
           />
@@ -108,7 +110,7 @@ export function ChatInterface() {
             disabled={isLoading || !input.trim()}
             className="px-6 py-3 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium min-h-[48px]"
           >
-            {isLoading ? 'Thinking...' : 'Send'}
+            {isLoading ? t('chat.thinking') : t('chat.send')}
           </button>
         </div>
       </div>

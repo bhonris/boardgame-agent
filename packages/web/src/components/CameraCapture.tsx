@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { analyzeImage } from '../api/client'
 import { useGameStore } from '../stores/gameStore'
 import type { VisionResponse } from '../types/game'
@@ -6,6 +7,7 @@ import type { VisionResponse } from '../types/game'
 type VisionMode = 'identify' | 'read_card' | 'verify_setup'
 
 export function CameraCapture() {
+  const { t } = useTranslation()
   const game = useGameStore((s) => s.selectedGame)
   const sessionId = useGameStore((s) => s.sessionId)
 
@@ -30,9 +32,9 @@ export function CameraCapture() {
         setIsCameraActive(true)
       }
     } catch {
-      setError('Camera access denied. You can upload a photo instead.')
+      setError(t('camera.cameraError'))
     }
-  }, [])
+  }, [t])
 
   const capturePhoto = useCallback(() => {
     if (!videoRef.current) return
@@ -80,11 +82,11 @@ export function CameraCapture() {
       const response = await analyzeImage(game.id, selectedFile, mode, sessionId ?? undefined)
       setResult(response)
     } catch {
-      setError('Analysis failed. Please try again with a clearer image.')
+      setError(t('camera.analysisError'))
     } finally {
       setIsAnalyzing(false)
     }
-  }, [selectedFile, game, mode, sessionId])
+  }, [selectedFile, game, mode, sessionId, t])
 
   const resetCapture = useCallback(() => {
     setPreview(null)
@@ -93,15 +95,15 @@ export function CameraCapture() {
     setError(null)
   }, [])
 
-  const modes: { value: VisionMode; label: string; description: string }[] = [
-    { value: 'identify', label: 'What is this?', description: 'Identify a game component' },
-    { value: 'read_card', label: 'Read Card', description: 'Read and explain card text' },
-    { value: 'verify_setup', label: 'Check Setup', description: 'Verify board setup is correct' },
+  const modes: { value: VisionMode; labelKey: string; descKey: string }[] = [
+    { value: 'identify', labelKey: 'camera.modes.identify', descKey: 'camera.modes.identifyDesc' },
+    { value: 'read_card', labelKey: 'camera.modes.read_card', descKey: 'camera.modes.read_cardDesc' },
+    { value: 'verify_setup', labelKey: 'camera.modes.verify_setup', descKey: 'camera.modes.verify_setupDesc' },
   ]
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <h2 className="text-xl font-bold text-gray-900">Camera - {game?.title}</h2>
+      <h2 className="text-xl font-bold text-gray-900">{t('camera.title', { game: game?.title })}</h2>
 
       <div className="flex gap-2 flex-wrap">
         {modes.map((m) => (
@@ -114,11 +116,11 @@ export function CameraCapture() {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {m.label}
+            {t(m.labelKey)}
           </button>
         ))}
       </div>
-      <p className="text-sm text-gray-500">{modes.find((m) => m.value === mode)?.description}</p>
+      <p className="text-sm text-gray-500">{t(modes.find((m) => m.value === mode)?.descKey ?? '')}</p>
 
       {!preview && !isCameraActive && (
         <div className="flex gap-4">
@@ -126,13 +128,13 @@ export function CameraCapture() {
             onClick={startCamera}
             className="flex-1 py-4 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 transition-colors text-sm font-medium min-h-[48px]"
           >
-            Open Camera
+            {t('camera.openCamera')}
           </button>
           <button
             onClick={() => fileInputRef.current?.click()}
             className="flex-1 py-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors text-sm font-medium min-h-[48px]"
           >
-            Upload Photo
+            {t('camera.uploadPhoto')}
           </button>
           <input
             ref={fileInputRef}
@@ -152,13 +154,13 @@ export function CameraCapture() {
               onClick={capturePhoto}
               className="flex-1 py-4 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 text-sm font-medium min-h-[48px]"
             >
-              Capture
+              {t('camera.capture')}
             </button>
             <button
               onClick={stopCamera}
               className="px-6 py-4 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 text-sm font-medium min-h-[48px]"
             >
-              Cancel
+              {t('camera.cancel')}
             </button>
           </div>
         </div>
@@ -173,13 +175,13 @@ export function CameraCapture() {
               disabled={isAnalyzing}
               className="flex-1 py-3 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 disabled:opacity-50 text-sm font-medium min-h-[48px]"
             >
-              {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+              {isAnalyzing ? t('camera.analyzing') : t('camera.analyze')}
             </button>
             <button
               onClick={resetCapture}
               className="px-6 py-3 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 text-sm font-medium min-h-[48px]"
             >
-              Retake
+              {t('camera.retake')}
             </button>
           </div>
         </div>
@@ -197,13 +199,13 @@ export function CameraCapture() {
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
               result.confidence === 'high' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
             }`}>
-              {result.confidence} confidence
+              {t('camera.confidence', { level: result.confidence })}
             </span>
           </div>
           <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{result.analysis}</p>
           {result.relatedRules.length > 0 && (
             <div className="border-t border-gray-100 pt-3">
-              <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Related Rules</h4>
+              <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">{t('camera.relatedRules')}</h4>
               <ul className="space-y-1">
                 {result.relatedRules.map((rule, i) => (
                   <li key={i} className="text-sm text-gray-600">{rule}</li>

@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { textToSpeech } from '../api/client'
 
 interface VoiceInterfaceProps {
@@ -6,7 +7,13 @@ interface VoiceInterfaceProps {
   lastAssistantMessage?: string
 }
 
+const LANG_MAP: Record<string, string> = {
+  en: 'en-US',
+  th: 'th-TH',
+}
+
 export function VoiceInterface({ onTranscript, lastAssistantMessage }: VoiceInterfaceProps) {
+  const { t, i18n } = useTranslation()
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [transcript, setTranscript] = useState('')
@@ -16,14 +23,14 @@ export function VoiceInterface({ onTranscript, lastAssistantMessage }: VoiceInte
   const startListening = useCallback(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser.')
+      alert(t('voice.notSupported'))
       return
     }
 
     const recognition = new SpeechRecognition()
     recognition.continuous = false
     recognition.interimResults = true
-    recognition.lang = 'en-US'
+    recognition.lang = LANG_MAP[i18n.language] ?? 'en-US'
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       const result = event.results[event.results.length - 1]
@@ -48,7 +55,7 @@ export function VoiceInterface({ onTranscript, lastAssistantMessage }: VoiceInte
     recognition.start()
     setIsListening(true)
     setTranscript('')
-  }, [onTranscript])
+  }, [onTranscript, t, i18n.language])
 
   const stopListening = useCallback(() => {
     recognitionRef.current?.stop()
@@ -78,12 +85,13 @@ export function VoiceInterface({ onTranscript, lastAssistantMessage }: VoiceInte
 
       const utterance = new SpeechSynthesisUtterance(lastAssistantMessage)
       utterance.rate = 1.0
+      utterance.lang = LANG_MAP[i18n.language] ?? 'en-US'
       utterance.onend = () => setIsSpeaking(false)
       speechSynthesis.speak(utterance)
     } catch {
       setIsSpeaking(false)
     }
-  }, [lastAssistantMessage])
+  }, [lastAssistantMessage, i18n.language])
 
   const stopSpeaking = useCallback(() => {
     audioRef.current?.pause()
@@ -103,7 +111,7 @@ export function VoiceInterface({ onTranscript, lastAssistantMessage }: VoiceInte
             ? 'bg-red-500 text-white scale-110 animate-pulse'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
         }`}
-        title="Hold to talk"
+        title={t('voice.holdToTalk')}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
@@ -120,7 +128,7 @@ export function VoiceInterface({ onTranscript, lastAssistantMessage }: VoiceInte
               ? 'bg-indigo-500 text-white animate-pulse'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
-          title={isSpeaking ? 'Stop speaking' : 'Read aloud'}
+          title={isSpeaking ? t('voice.stopSpeaking') : t('voice.readAloud')}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />

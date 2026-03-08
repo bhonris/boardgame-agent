@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { fetchTutorial } from '../api/client'
 import { useGameStore } from '../stores/gameStore'
 
 export function TutorialEngine() {
+  const { t } = useTranslation()
   const game = useGameStore((s) => s.selectedGame)
   const currentStep = useGameStore((s) => s.currentTutorialStep)
   const setStep = useGameStore((s) => s.setTutorialStep)
@@ -16,7 +18,7 @@ export function TutorialEngine() {
   if (isLoading || !tutorial) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-gray-400">Loading tutorial...</div>
+        <div className="animate-pulse text-gray-400">{t('tutorial.loading')}</div>
       </div>
     )
   }
@@ -33,7 +35,7 @@ export function TutorialEngine() {
     walkthrough: 'bg-indigo-100 text-indigo-700',
   }
 
-  const phaseLabel = step.phase.replace(/_/g, ' ')
+  const phaseLabel = t(`tutorial.phases.${step.phase}`, { defaultValue: step.phase.replace(/_/g, ' ') })
   const phaseColor = phaseColors[step.phase] ?? 'bg-gray-100 text-gray-700'
 
   return (
@@ -43,7 +45,7 @@ export function TutorialEngine() {
           {phaseLabel}
         </span>
         <span className="text-sm text-gray-400">
-          Step {currentStep + 1} of {tutorial.totalSteps}
+          {t('tutorial.stepOf', { current: currentStep + 1, total: tutorial.totalSteps })}
         </span>
       </div>
 
@@ -82,14 +84,14 @@ export function TutorialEngine() {
           disabled={currentStep === 0}
           className="px-6 py-3 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-h-[48px]"
         >
-          Previous
+          {t('tutorial.previous')}
         </button>
         <button
           onClick={() => setStep(Math.min(tutorial.totalSteps - 1, currentStep + 1))}
           disabled={currentStep === tutorial.totalSteps - 1}
           className="px-6 py-3 text-sm font-medium text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-h-[48px]"
         >
-          Next
+          {t('tutorial.next')}
         </button>
       </div>
     </div>

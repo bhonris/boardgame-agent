@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useGameStore } from '../stores/gameStore'
 import { TutorialEngine } from './TutorialEngine'
 import { ChatInterface } from './ChatInterface'
@@ -7,16 +8,19 @@ import { QuickReference } from './QuickReference'
 import { SetupChecklist } from './SetupChecklist'
 import { VoiceInterface } from './VoiceInterface'
 import { RealtimeMode } from './RealtimeMode'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
-const TABS = [
-  { key: 'tutorial' as const, label: 'Tutorial' },
-  { key: 'chat' as const, label: 'Q&A' },
-  { key: 'camera' as const, label: 'Camera' },
-  { key: 'reference' as const, label: 'Reference' },
-  { key: 'realtime' as const, label: 'Realtime' },
-] as const
+const TAB_KEYS = ['tutorial', 'chat', 'camera', 'reference', 'realtime'] as const
+const TAB_I18N_KEYS: Record<(typeof TAB_KEYS)[number], string> = {
+  tutorial: 'tabs.tutorial',
+  chat: 'tabs.qa',
+  camera: 'tabs.camera',
+  reference: 'tabs.reference',
+  realtime: 'tabs.realtime',
+}
 
 export function GameView() {
+  const { t } = useTranslation()
   const game = useGameStore((s) => s.selectedGame)
   const setSelectedGame = useGameStore((s) => s.setSelectedGame)
   const activeTab = useGameStore((s) => s.activeTab)
@@ -28,7 +32,6 @@ export function GameView() {
 
   const handleVoiceTranscript = useCallback((text: string) => {
     setActiveTab('chat')
-    // Add user message from voice and trigger the chat
     addMessage({
       id: crypto.randomUUID(),
       role: 'user',
@@ -53,26 +56,29 @@ export function GameView() {
             </button>
             <h1 className="text-lg font-semibold text-gray-900">{game.title}</h1>
           </div>
-          {activeTab !== 'realtime' && (
-            <VoiceInterface
-              onTranscript={handleVoiceTranscript}
-              lastAssistantMessage={lastAssistantMsg}
-            />
-          )}
+          <div className="flex items-center gap-3">
+            {activeTab !== 'realtime' && (
+              <VoiceInterface
+                onTranscript={handleVoiceTranscript}
+                lastAssistantMessage={lastAssistantMsg}
+              />
+            )}
+            <LanguageSwitcher />
+          </div>
         </div>
 
         <nav className="max-w-6xl mx-auto px-4 flex gap-1">
-          {TABS.map((tab) => (
+          {TAB_KEYS.map((key) => (
             <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              key={key}
+              onClick={() => setActiveTab(key)}
               className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 min-h-[48px] ${
-                activeTab === tab.key
+                activeTab === key
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              {tab.label}
+              {t(TAB_I18N_KEYS[key])}
             </button>
           ))}
         </nav>

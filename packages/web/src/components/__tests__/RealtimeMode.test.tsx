@@ -390,14 +390,13 @@ describe('RealtimeMode', () => {
   })
 
   it('blocks concurrent sendMessage calls (regression: overlapping SSE)', async () => {
-    let resolveFirst: () => void
     let callCount = 0
 
     // First call hangs, second call should be blocked
     vi.mocked(streamChatRealtime).mockImplementation(() => {
       callCount++
       const gen = async function* () {
-        await new Promise<void>((r) => { resolveFirst = r })
+        await new Promise<void>(() => { /* never resolves — simulates hanging request */ })
         yield { event: 'chunk' as const, data: JSON.stringify({ text: 'hello' }) }
         yield { event: 'done' as const, data: JSON.stringify({ session_id: 's1' }) }
       }

@@ -1,10 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { streamChatRealtime, textToSpeech } from '../api/client'
 import { useGameStore } from '../stores/gameStore'
 
 type RealtimeState = 'idle' | 'listening' | 'processing' | 'speaking'
 
+const LANG_MAP: Record<string, string> = {
+  en: 'en-US',
+  th: 'th-TH',
+}
+
 export function RealtimeMode() {
+  const { t, i18n } = useTranslation()
   const game = useGameStore((s) => s.selectedGame)
   const sessionId = useGameStore((s) => s.sessionId)
   const setSessionId = useGameStore((s) => s.setSessionId)
@@ -61,9 +68,9 @@ export function RealtimeMode() {
         streamRef.current = stream
       }
     } catch {
-      setCameraError('Camera access denied. Realtime mode works best with a camera, but you can still use voice.')
+      setCameraError(t('realtime.cameraError'))
     }
-  }, [])
+  }, [t])
 
   const stopCamera = useCallback(() => {
     streamRef.current?.getTracks().forEach((t) => t.stop())
@@ -117,6 +124,7 @@ export function RealtimeMode() {
       await new Promise<void>((resolve) => {
         const utterance = new SpeechSynthesisUtterance(text)
         utterance.rate = 1.0
+        utterance.lang = LANG_MAP[i18n.language] ?? 'en-US'
         utterance.onend = () => resolve()
         utterance.onerror = () => resolve()
         speechSynthesis.speak(utterance)
@@ -126,7 +134,7 @@ export function RealtimeMode() {
         setRealtimeState('listening')
       }
     }
-  }, [])
+  }, [i18n.language])
 
   const stopAudio = useCallback(() => {
     audioRef.current?.pause()
@@ -156,11 +164,11 @@ export function RealtimeMode() {
           if (data.session_id) setSessionId(data.session_id)
         } else if (event.event === 'error') {
           const data = JSON.parse(event.data)
-          updateLastMessage(`\n\n_Error: ${data.error}_`)
+          updateLastMessage(`\n\n_${t('realtime.error', { message: data.error })}_`)
         }
       }
     } catch {
-      updateLastMessage('\n\n_Connection error._')
+      updateLastMessage(`\n\n_${t('realtime.connectionError')}_`)
     }
 
     isSendingRef.current = false
@@ -170,19 +178,19 @@ export function RealtimeMode() {
     } else if (isActiveRef.current) {
       setRealtimeState('listening')
     }
-  }, [game, sessionId, captureSnapshot, addMessage, updateLastMessage, setSessionId, speakText])
+  }, [game, sessionId, captureSnapshot, addMessage, updateLastMessage, setSessionId, speakText, t])
 
   const startRecognition = useCallback(() => {
     const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SpeechRecognitionCtor) {
-      setCameraError('Speech recognition is not supported in this browser.')
+      setCameraError(t('realtime.speechError'))
       return
     }
 
     const recognition = new SpeechRecognitionCtor()
     recognition.continuous = false
     recognition.interimResults = true
-    recognition.lang = 'en-US'
+    recognition.lang = LANG_MAP[i18n.language] ?? 'en-US'
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       const result = event.results[event.results.length - 1]
@@ -195,7 +203,7 @@ export function RealtimeMode() {
       }
     }
 
-    recognition.onerror = (event) => {
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       // "no-speech" is normal — just restart
       if (event.error === 'no-speech' || event.error === 'aborted') {
         if (isActiveRef.current) {
@@ -222,7 +230,7 @@ export function RealtimeMode() {
     shouldRestartRef.current = true
     recognition.start()
     setRealtimeState('listening')
-  }, [sendMessage])
+  }, [sendMessage, t, i18n.language])
 
   const stopRecognition = useCallback(() => {
     shouldRestartRef.current = false
@@ -254,14 +262,21 @@ export function RealtimeMode() {
     }
   }, [realtimeState, isActive, startRecognition])
 
-  const stateConfig = {
-    idle: { color: 'bg-gray-400', label: 'Inactive', pulse: false },
-    listening: { color: 'bg-green-500', label: 'Listening...', pulse: true },
-    processing: { color: 'bg-yellow-500', label: 'Thinking...', pulse: true },
-    speaking: { color: 'bg-blue-500', label: 'Speaking...', pulse: true },
+  const stateLabels: Record<RealtimeState, string> = {
+    idle: t('realtime.inactive'),
+    listening: t('realtime.listening'),
+    processing: t('realtime.processing'),
+    speaking: t('realtime.speaking'),
   }
 
-  const { color, label, pulse } = stateConfig[realtimeState]
+  const stateConfig = {
+    idle: { color: 'bg-gray-400', pulse: false },
+    listening: { color: 'bg-green-500', pulse: true },
+    processing: { color: 'bg-yellow-500', pulse: true },
+    speaking: { color: 'bg-blue-500', pulse: true },
+  }
+
+  const { color, pulse } = stateConfig[realtimeState]
 
   // Show last 6 messages for the overlay
   const recentMessages = messages.slice(-6)
@@ -287,7 +302,7 @@ export function RealtimeMode() {
         {/* State indicator */}
         <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1.5">
           <span className={`w-3 h-3 rounded-full ${color} ${pulse ? 'animate-pulse' : ''}`} />
-          <span className="text-white text-xs font-medium">{label}</span>
+          <span className="text-white text-xs font-medium">{stateLabels[realtimeState]}</span>
         </div>
 
         {/* Interim transcript */}
@@ -330,12 +345,10 @@ export function RealtimeMode() {
               : 'bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
           }`}
         >
-          {isActive ? 'Stop Realtime' : 'Start Realtime'}
+          {isActive ? t('realtime.stop') : t('realtime.start')}
         </button>
         <p className="text-xs text-gray-500">
-          {isActive
-            ? 'Speak naturally — I can see the board and hear you'
-            : 'Point your camera at the board and tap to start'}
+          {isActive ? t('realtime.hintActive') : t('realtime.hintInactive')}
         </p>
       </div>
     </div>
