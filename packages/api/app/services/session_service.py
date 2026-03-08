@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.base import ChatMessage, ChatSession, MessageRole
+from app.models.base import ChatMessage, ChatMode, ChatSession, MessageRole
 
 
 class SessionService:
@@ -11,33 +11,28 @@ class SessionService:
         self.db = db
 
     async def get_or_create_session(
-        self, session_id: str | None, game_id: str
+        self, session_id: str | None, game_id: str, mode: ChatMode = ChatMode.qa,
     ) -> ChatSession:
         if session_id:
-            try:
-                uid = uuid.UUID(session_id)
-            except ValueError:
-                uid = None
-            if uid:
-                result = await self.db.execute(
-                    select(ChatSession).where(ChatSession.id == uid)
-                )
-                session = result.scalar_one_or_none()
-                if session:
-                    return session
+            result = await self.db.execute(
+                select(ChatSession).where(ChatSession.id == session_id)
+            )
+            session = result.scalar_one_or_none()
+            if session:
+                return session
 
-        session = ChatSession(game_id=game_id)
+        session = ChatSession(game_id=game_id, mode=mode)
         self.db.add(session)
         await self.db.flush()
         return session
 
     async def get_conversation_history(
-        self, session_id: uuid.UUID, limit: int = 20
+        self, session_id: str, limit: int = 20
     ) -> list[dict]:
         result = await self.db.execute(
             select(ChatMessage)
             .where(ChatMessage.session_id == session_id)
-            .order_by(ChatMessage.created_at.desc())
+            .order_by(ChatMessage.id.desc())
             .limit(limit)
         )
         messages = result.scalars().all()
@@ -50,7 +45,7 @@ class SessionService:
 
     async def save_message(
         self,
-        session_id: uuid.UUID,
+        session_id: str,
         role: MessageRole,
         content: str,
         model_used: str | None = None,

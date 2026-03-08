@@ -6,12 +6,14 @@ import { CameraCapture } from './CameraCapture'
 import { QuickReference } from './QuickReference'
 import { SetupChecklist } from './SetupChecklist'
 import { VoiceInterface } from './VoiceInterface'
+import { RealtimeMode } from './RealtimeMode'
 
 const TABS = [
   { key: 'tutorial' as const, label: 'Tutorial' },
   { key: 'chat' as const, label: 'Q&A' },
   { key: 'camera' as const, label: 'Camera' },
   { key: 'reference' as const, label: 'Reference' },
+  { key: 'realtime' as const, label: 'Realtime' },
 ] as const
 
 export function GameView() {
@@ -51,10 +53,12 @@ export function GameView() {
             </button>
             <h1 className="text-lg font-semibold text-gray-900">{game.title}</h1>
           </div>
-          <VoiceInterface
-            onTranscript={handleVoiceTranscript}
-            lastAssistantMessage={lastAssistantMsg}
-          />
+          {activeTab !== 'realtime' && (
+            <VoiceInterface
+              onTranscript={handleVoiceTranscript}
+              lastAssistantMessage={lastAssistantMsg}
+            />
+          )}
         </div>
 
         <nav className="max-w-6xl mx-auto px-4 flex gap-1">
@@ -90,6 +94,7 @@ export function GameView() {
         )}
         {activeTab === 'camera' && <CameraCapture />}
         {activeTab === 'reference' && <QuickReference />}
+        {activeTab === 'realtime' && <RealtimeMode />}
       </main>
     </div>
   )

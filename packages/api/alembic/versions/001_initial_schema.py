@@ -9,7 +9,6 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 revision: str = "001"
 down_revision: Union[str, None] = None
@@ -18,8 +17,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.execute("CREATE EXTENSION IF NOT EXISTS vector")
-
     op.create_table(
         "games",
         sa.Column("id", sa.String(100), primary_key=True),
@@ -39,39 +36,36 @@ def upgrade() -> None:
 
     op.create_table(
         "game_rulebooks",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("id", sa.String(36), primary_key=True),
         sa.Column("game_id", sa.String(100), sa.ForeignKey("games.id"), nullable=False),
         sa.Column("version", sa.String(50), nullable=True),
         sa.Column("source_pdf_url", sa.String(500), nullable=True),
         sa.Column("processed_text", sa.Text, nullable=True),
-        sa.Column("section_structure", JSONB, nullable=True),
+        sa.Column("section_structure", sa.JSON, nullable=True),
         sa.Column("status", sa.String(20), default="processing"),
         sa.Column("created_at", sa.DateTime, server_default=sa.func.now()),
     )
 
     op.create_table(
         "rulebook_chunks",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("rulebook_id", UUID(as_uuid=True), sa.ForeignKey("game_rulebooks.id"), nullable=False),
+        sa.Column("id", sa.String(36), primary_key=True),
+        sa.Column("rulebook_id", sa.String(36), sa.ForeignKey("game_rulebooks.id"), nullable=False),
         sa.Column("game_id", sa.String(100), sa.ForeignKey("games.id"), nullable=False),
         sa.Column("section_name", sa.String(255), nullable=True),
         sa.Column("chunk_text", sa.Text, nullable=False),
         sa.Column("chunk_index", sa.Integer, nullable=False),
-        sa.Column("embedding", sa.Column("embedding", sa.Text)),  # pgvector handles this
         sa.Column("token_count", sa.Integer, nullable=True),
         sa.Column("created_at", sa.DateTime, server_default=sa.func.now()),
     )
-
-    op.execute("ALTER TABLE rulebook_chunks ADD COLUMN IF NOT EXISTS embedding vector(1536)")
 
     op.create_index("ix_rulebook_chunks_game_id", "rulebook_chunks", ["game_id"])
 
     op.create_table(
         "tutorial_scripts",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("id", sa.String(36), primary_key=True),
         sa.Column("game_id", sa.String(100), sa.ForeignKey("games.id"), nullable=False),
         sa.Column("version", sa.String(50), nullable=True),
-        sa.Column("steps", JSONB, nullable=False),
+        sa.Column("steps", sa.JSON, nullable=False),
         sa.Column("estimated_duration_minutes", sa.Integer, nullable=True),
         sa.Column("is_curated", sa.Boolean, default=True),
         sa.Column("created_at", sa.DateTime, server_default=sa.func.now()),
@@ -79,17 +73,17 @@ def upgrade() -> None:
 
     op.create_table(
         "quick_references",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("id", sa.String(36), primary_key=True),
         sa.Column("game_id", sa.String(100), sa.ForeignKey("games.id"), nullable=False),
         sa.Column("type", sa.String(20), nullable=False),
-        sa.Column("content", JSONB, nullable=False),
+        sa.Column("content", sa.JSON, nullable=False),
         sa.Column("display_order", sa.Integer, default=0),
         sa.Column("created_at", sa.DateTime, server_default=sa.func.now()),
     )
 
     op.create_table(
         "chat_sessions",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("id", sa.String(36), primary_key=True),
         sa.Column("game_id", sa.String(100), sa.ForeignKey("games.id"), nullable=False),
         sa.Column("device_id", sa.String(255), nullable=True),
         sa.Column("mode", sa.String(20), default="qa"),
@@ -101,11 +95,11 @@ def upgrade() -> None:
 
     op.create_table(
         "chat_messages",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("session_id", UUID(as_uuid=True), sa.ForeignKey("chat_sessions.id"), nullable=False),
+        sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column("session_id", sa.String(36), sa.ForeignKey("chat_sessions.id"), nullable=False),
         sa.Column("role", sa.String(20), nullable=False),
         sa.Column("content", sa.Text, nullable=False),
-        sa.Column("rag_chunks_used", JSONB, nullable=True),
+        sa.Column("rag_chunks_used", sa.JSON, nullable=True),
         sa.Column("model_used", sa.String(100), nullable=True),
         sa.Column("token_count", sa.Integer, nullable=True),
         sa.Column("created_at", sa.DateTime, server_default=sa.func.now()),

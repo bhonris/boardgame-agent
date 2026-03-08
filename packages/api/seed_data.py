@@ -46,6 +46,18 @@ GAMES = [
         "publisher": "Stonemaier Games",
         "year": 2019,
     },
+    {
+        "id": "splendor",
+        "title": "Splendor",
+        "min_players": 2,
+        "max_players": 4,
+        "complexity_weight": 1.8,
+        "play_time_minutes": 30,
+        "description": "Collect gem tokens, purchase development cards, and attract nobles to earn prestige points. A fast-paced engine-building game where your gem cards give permanent discounts on future purchases.",
+        "cover_image_url": "/images/splendor.jpg",
+        "publisher": "Space Cowboys",
+        "year": 2014,
+    },
 ]
 
 QUICK_REFERENCES = {
@@ -156,6 +168,47 @@ QUICK_REFERENCES = {
                     "Round 2: 7 turns",
                     "Round 3: 6 turns",
                     "Round 4: 5 turns"
+                ]
+            },
+            "display_order": 2,
+        },
+    ],
+    "splendor": [
+        {
+            "type": "turn_order",
+            "content": {
+                "title": "Turn Actions (pick one)",
+                "items": [
+                    "1. Take 3 gem tokens of different colors",
+                    "2. Take 2 gem tokens of the same color (if 4+ available)",
+                    "3. Reserve 1 development card (take 1 gold wildcard token)",
+                    "4. Purchase 1 development card (from table or reserved)"
+                ]
+            },
+            "display_order": 0,
+        },
+        {
+            "type": "icons",
+            "content": {
+                "title": "Gem Types",
+                "items": [
+                    "Diamond (white) | Sapphire (blue) | Emerald (green)",
+                    "Ruby (red) | Onyx (black)",
+                    "Gold (yellow) = wildcard, only from reserving",
+                    "Max 10 tokens in hand at end of turn"
+                ]
+            },
+            "display_order": 1,
+        },
+        {
+            "type": "scoring",
+            "content": {
+                "title": "Victory (Goal: 15 Prestige Points)",
+                "items": [
+                    "Development cards = 0-5 prestige points each",
+                    "Noble tiles = 3 prestige points each (auto-visit)",
+                    "Game ends at end of round when a player reaches 15 pts",
+                    "Highest prestige wins; fewest cards breaks ties"
                 ]
             },
             "display_order": 2,

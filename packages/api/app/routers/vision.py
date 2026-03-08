@@ -1,6 +1,5 @@
-import base64
-
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from pydantic_ai.messages import BinaryContent
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,7 +7,7 @@ from app.config import settings
 from app.database import get_db
 from app.models.base import Game
 from app.schemas.game import VisionResponse
-from app.services.ai_service import VisionDeps, vision_agent
+from app.services.ai_service import VisionDeps, get_vision_agent
 
 router = APIRouter(prefix="/api/games", tags=["vision"])
 
@@ -37,8 +36,6 @@ async def analyze_image(
     if len(contents) > max_bytes:
         raise HTTPException(status_code=400, detail=f"Image too large (max {settings.max_upload_size_mb}MB)")
 
-    b64_image = base64.b64encode(contents).decode("utf-8")
-
     mode_prompts = {
         "identify": f"Identify this game component from {game.title} and explain what it is and how it's used in the game.",
         "read_card": f"Read the text on this card from {game.title} and explain what it does, including any game effects.",
@@ -48,13 +45,10 @@ async def analyze_image(
     prompt = mode_prompts[mode]
 
     try:
-        result = await vision_agent.run(
+        result = await get_vision_agent().run(
             [
-                {"type": "text", "text": prompt},
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:{image.content_type};base64,{b64_image}"},
-                },
+                prompt,
+                BinaryContent(data=contents, media_type=image.content_type),
             ],
             model=settings.vision_model,
         )

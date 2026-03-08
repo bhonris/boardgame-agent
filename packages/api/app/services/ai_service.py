@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import lru_cache
 
 from pydantic import BaseModel
 from pydantic_ai import Agent
@@ -34,11 +35,14 @@ Relevant rulebook content:
 {rulebook_context}
 """
 
-teacher_agent = Agent(
-    settings.pydantic_ai_model,
-    system_prompt=TEACHER_SYSTEM_PROMPT,
-    result_type=str,
-)
+
+@lru_cache(maxsize=1)
+def get_teacher_agent() -> Agent:
+    return Agent(
+        settings.pydantic_ai_model,
+        system_prompt=TEACHER_SYSTEM_PROMPT,
+        output_type=str,
+    )
 
 
 @dataclass
@@ -65,8 +69,39 @@ Mode: {mode}
 Provide clear, helpful explanations. If you can't identify something with confidence, say so.
 """
 
-vision_agent = Agent(
-    settings.vision_model,
-    system_prompt=VISION_SYSTEM_PROMPT,
-    result_type=str,
-)
+
+REALTIME_SYSTEM_PROMPT = """You are an expert board game teacher sitting at the table with the player.
+They are showing you the board and talking to you naturally. You can see what they see.
+
+Key principles:
+- Keep responses SHORT and conversational — your words will be spoken aloud
+- Aim for 1-3 sentences unless they ask for a detailed explanation
+- Be natural and friendly, like a real person at the table
+- Reference what you see in the image when relevant
+- If they ask about something on the board, look at the image and describe what you see
+- Teach rules just-in-time as situations arise
+- If you can't see something clearly, ask them to show it better
+
+You are currently teaching: {game_title}
+
+Relevant rulebook content:
+{rulebook_context}
+"""
+
+
+@lru_cache(maxsize=1)
+def get_realtime_agent() -> Agent:
+    return Agent(
+        settings.pydantic_ai_model,
+        system_prompt=REALTIME_SYSTEM_PROMPT,
+        output_type=str,
+    )
+
+
+@lru_cache(maxsize=1)
+def get_vision_agent() -> Agent:
+    return Agent(
+        settings.vision_model,
+        system_prompt=VISION_SYSTEM_PROMPT,
+        output_type=str,
+    )

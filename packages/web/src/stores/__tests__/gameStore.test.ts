@@ -49,6 +49,21 @@ describe('gameStore', () => {
     expect(useGameStore.getState().activeTab).toBe('chat')
   })
 
+  it('sets active tab to realtime', () => {
+    useGameStore.getState().setActiveTab('realtime')
+    expect(useGameStore.getState().activeTab).toBe('realtime')
+  })
+
+  it('cycles through all tab values including realtime', () => {
+    const tabs: Array<'tutorial' | 'chat' | 'camera' | 'reference' | 'realtime'> = [
+      'tutorial', 'chat', 'camera', 'reference', 'realtime',
+    ]
+    for (const tab of tabs) {
+      useGameStore.getState().setActiveTab(tab)
+      expect(useGameStore.getState().activeTab).toBe(tab)
+    }
+  })
+
   it('sets tutorial step', () => {
     useGameStore.getState().setTutorialStep(5)
     expect(useGameStore.getState().currentTutorialStep).toBe(5)

@@ -1,0 +1,61 @@
+{
+  "gameId": "splendor",
+  "steps": [
+    {
+      "id": 1,
+      "phase": "theme_and_goal",
+      "title": "What is Splendor?",
+      "content": "You are a Renaissance merchant acquiring gem mines, transportation, and shops to earn the most **prestige points**. Collect gems, buy development cards that give you permanent purchasing power, and attract visits from nobles. The first player to reach **15 prestige points** triggers the final round!",
+      "estimated_seconds": 30
+    },
+    {
+      "id": 2,
+      "phase": "components",
+      "title": "What's on the Table",
+      "content": "Let's look at the components:\n\n- **Gem tokens** (40 total) - 7 each of 5 colors: Diamond (white), Sapphire (blue), Emerald (green), Ruby (red), Onyx (black)\n- **Gold tokens** (5) - Wildcards, only obtained by reserving cards\n- **Development cards** (90) in 3 tiers:\n  - Level 1 (green dots) - Cheap, low/no prestige\n  - Level 2 (yellow dots) - Mid-cost, some prestige\n  - Level 3 (blue dots) - Expensive, high prestige\n- **Noble tiles** - Worth 3 prestige each; they visit you automatically\n\nEach development card shows a **gem cost** (bottom-left), a **gem bonus** (top-right corner), and possibly **prestige points** (top-left).",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 3,
+      "phase": "setup",
+      "title": "Setting Up the Game",
+      "content": "1. Place gem tokens in the center based on player count:\n   - **2 players**: 4 of each gem color\n   - **3 players**: 5 of each gem color\n   - **4 players**: 7 of each gem color\n   - Always use all 5 gold tokens\n2. Shuffle each tier of development cards separately\n3. Place each deck face-down, then reveal **4 cards** face-up from each tier (3 rows of 4)\n4. Reveal **noble tiles** equal to players + 1 (e.g., 4 nobles for 3 players)\n5. Youngest player goes first",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 4,
+      "phase": "turn_structure",
+      "title": "What You Do on Your Turn",
+      "content": "On your turn, you must perform **exactly one** of these four actions:\n\n**1. Take 3 different gems** - Pick 1 token each of 3 different colors.\n\n**2. Take 2 same-color gems** - Pick 2 tokens of one color, but only if there are **4 or more** of that color available.\n\n**3. Reserve a card** - Take any face-up card (or the top of a deck) into your hand and receive 1 **gold wildcard token**. You can hold at most 3 reserved cards.\n\n**4. Purchase a card** - Buy a face-up card or one you previously reserved by paying its gem cost.\n\n**Important:** You can never have more than **10 tokens** at the end of your turn. Return extras to the supply.",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 5,
+      "phase": "core_actions",
+      "title": "Buying Cards & Gem Bonuses",
+      "content": "When you **purchase a card**, pay its gem cost using your tokens. But here's the key mechanic:\n\n**Each card you own gives a permanent gem bonus.** This bonus counts as a gem of that color for all future purchases. For example:\n- A card costs 3 blue + 2 red\n- You own 2 cards with blue bonuses\n- You only need to pay 1 blue token + 2 red tokens!\n\nGold tokens are **wildcards** and can substitute for any gem color.\n\nPurchased cards stay in front of you — their bonuses stack and never go away. This is the engine-building core of the game!",
+      "estimated_seconds": 60
+    },
+    {
+      "id": 6,
+      "phase": "core_actions",
+      "title": "Noble Visits",
+      "content": "Nobles visit you **automatically** at the end of your turn if you meet their requirements. Each noble tile shows the gem bonuses needed (from your purchased cards, not tokens).\n\nFor example, a noble might require 3 blue + 3 red gem bonuses. Once you have that many cards of those colors, the noble visits you and you take the tile — worth **3 prestige points**.\n\n**Key rules:**\n- You don't spend anything — nobles just check your card collection\n- If you qualify for multiple nobles on the same turn, you pick one\n- Noble tiles cannot be reserved",
+      "estimated_seconds": 45
+    },
+    {
+      "id": 7,
+      "phase": "core_actions",
+      "title": "Strategy Tips",
+      "content": "A few tips for your first game:\n\n- **Focus on Level 1 cards early** — they're cheap and build your engine\n- **Look at the nobles** — plan your purchases to attract them for 3 bonus points\n- **Don't hoard tokens** — spend them on cards to get permanent bonuses\n- **Reserve strategically** — block opponents from key cards or save expensive ones for later\n- **Watch opponents** — if someone is close to a card you need, reserve it or buy it first",
+      "estimated_seconds": 30
+    },
+    {
+      "id": 8,
+      "phase": "walkthrough",
+      "title": "Let's Play a Practice Round",
+      "content": "Let's walk through some sample turns:\n\n**Turn 1:** Take 3 different gem tokens — say 1 blue, 1 red, and 1 green. Now you have tokens to spend.\n\n**Turn 2:** Look at the Level 1 cards. You see one that costs 1 blue + 1 red + 1 green and gives a white gem bonus. Buy it! Pay your 3 tokens. Now you have a permanent white discount.\n\n**Turn 3:** Take 2 tokens of the same color (e.g., 2 black) since there are 4+ available.\n\n**Turn 4:** A Level 2 card costs 2 white + 3 black. Your white card bonus covers 1 white, so you only need 1 white token + 3 black tokens. Build that engine!\n\nKeep buying cards to build your bonuses. The first player to reach **15 prestige points** triggers the final round — finish the round so everyone has equal turns, then the highest score wins!",
+      "estimated_seconds": 60
+    }
+  ]
+}

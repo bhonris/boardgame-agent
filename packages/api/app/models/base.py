@@ -2,8 +2,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func, JSON
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -28,6 +27,7 @@ class ChatMode(str, enum.Enum):
     tutorial = "tutorial"
     qa = "qa"
     dispute = "dispute"
+    realtime = "realtime"
 
 
 class MessageRole(str, enum.Enum):
@@ -60,14 +60,14 @@ class Game(Base):
 class GameRulebook(Base):
     __tablename__ = "game_rulebooks"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     game_id: Mapped[str] = mapped_column(ForeignKey("games.id"), nullable=False)
     version: Mapped[str | None] = mapped_column(String(50), nullable=True)
     source_pdf_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     processed_text: Mapped[str | None] = mapped_column(Text, nullable=True)
-    section_structure: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    section_structure: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     status: Mapped[RulebookStatus] = mapped_column(
-        Enum(RulebookStatus), default=RulebookStatus.processing
+        Enum(RulebookStatus, native_enum=False), default=RulebookStatus.processing
     )
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
@@ -78,8 +78,8 @@ class GameRulebook(Base):
 class RulebookChunk(Base):
     __tablename__ = "rulebook_chunks"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    rulebook_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("game_rulebooks.id"), nullable=False)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    rulebook_id: Mapped[str] = mapped_column(ForeignKey("game_rulebooks.id"), nullable=False)
     game_id: Mapped[str] = mapped_column(ForeignKey("games.id"), nullable=False)
     section_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     chunk_text: Mapped[str] = mapped_column(Text, nullable=False)
@@ -93,10 +93,10 @@ class RulebookChunk(Base):
 class TutorialScript(Base):
     __tablename__ = "tutorial_scripts"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     game_id: Mapped[str] = mapped_column(ForeignKey("games.id"), nullable=False)
     version: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    steps: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    steps: Mapped[dict] = mapped_column(JSON, nullable=False)
     estimated_duration_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
     is_curated: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
@@ -107,10 +107,10 @@ class TutorialScript(Base):
 class QuickReference(Base):
     __tablename__ = "quick_references"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     game_id: Mapped[str] = mapped_column(ForeignKey("games.id"), nullable=False)
-    type: Mapped[ReferenceType] = mapped_column(Enum(ReferenceType), nullable=False)
-    content: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    type: Mapped[ReferenceType] = mapped_column(Enum(ReferenceType, native_enum=False), nullable=False)
+    content: Mapped[dict] = mapped_column(JSON, nullable=False)
     display_order: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
@@ -120,10 +120,10 @@ class QuickReference(Base):
 class ChatSession(Base):
     __tablename__ = "chat_sessions"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     game_id: Mapped[str] = mapped_column(ForeignKey("games.id"), nullable=False)
     device_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    mode: Mapped[ChatMode] = mapped_column(Enum(ChatMode), default=ChatMode.qa)
+    mode: Mapped[ChatMode] = mapped_column(Enum(ChatMode, native_enum=False), default=ChatMode.qa)
     started_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     ended_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     message_count: Mapped[int] = mapped_column(Integer, default=0)
@@ -135,11 +135,11 @@ class ChatSession(Base):
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("chat_sessions.id"), nullable=False)
-    role: Mapped[MessageRole] = mapped_column(Enum(MessageRole), nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    session_id: Mapped[str] = mapped_column(ForeignKey("chat_sessions.id"), nullable=False)
+    role: Mapped[MessageRole] = mapped_column(Enum(MessageRole, native_enum=False), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    rag_chunks_used: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    rag_chunks_used: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     model_used: Mapped[str | None] = mapped_column(String(100), nullable=True)
     token_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

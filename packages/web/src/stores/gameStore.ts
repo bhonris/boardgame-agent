@@ -12,8 +12,8 @@ interface GameStore {
   clearMessages: () => void
   currentTutorialStep: number
   setTutorialStep: (step: number) => void
-  activeTab: 'tutorial' | 'chat' | 'camera' | 'reference'
-  setActiveTab: (tab: 'tutorial' | 'chat' | 'camera' | 'reference') => void
+  activeTab: 'tutorial' | 'chat' | 'camera' | 'reference' | 'realtime'
+  setActiveTab: (tab: 'tutorial' | 'chat' | 'camera' | 'reference' | 'realtime') => void
   isChatOpen: boolean
   setChatOpen: (open: boolean) => void
 }
