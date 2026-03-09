@@ -469,6 +469,40 @@ describe('RealtimeMode', () => {
     })
   })
 
+  it('passes current language to streamChatRealtime', async () => {
+    // streamChatRealtime hangs so we never reach speakText (avoids SpeechSynthesisUtterance issue)
+    const neverResolve = async function* () {
+      await new Promise(() => {}) // hang forever
+    }
+    vi.mocked(streamChatRealtime).mockReturnValue(neverResolve() as ReturnType<typeof streamChatRealtime>)
+
+    render(<RealtimeMode />)
+    await userEvent.click(screen.getByText('Start Realtime'))
+
+    await waitFor(() => {
+      expect(mockRecognitionInstance).not.toBeNull()
+    })
+
+    await act(() => {
+      mockRecognitionInstance!.onresult?.({
+        results: {
+          length: 1,
+          0: { isFinal: true, length: 1, 0: { transcript: 'สวัสดี', confidence: 0.9 } },
+        },
+      })
+    })
+
+    await waitFor(() => {
+      expect(streamChatRealtime).toHaveBeenCalledWith(
+        'catan',
+        'สวัสดี',
+        null, // snapshot (no real video in test)
+        undefined, // sessionId
+        expect.any(String), // language
+      )
+    })
+  })
+
   it('allows new messages after an error (regression: isSendingRef not reset)', async () => {
     let callCount = 0
 

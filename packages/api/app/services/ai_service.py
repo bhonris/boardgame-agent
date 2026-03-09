@@ -80,12 +80,17 @@ Key principles:
 - If they ask about something on the board, look at the image and describe what you see
 - Teach rules just-in-time as situations arise
 - If you can't see something clearly, ask them to show it better
-
+{language_instruction}
 You are currently teaching: {game_title}
 
 Relevant rulebook content:
 {rulebook_context}
 """
+
+LANGUAGE_INSTRUCTIONS = {
+    "th": "- IMPORTANT: You MUST respond entirely in Thai (ภาษาไทย). The player is speaking Thai.",
+}
+
 
 
 @lru_cache(maxsize=1)
@@ -100,8 +105,15 @@ def format_teacher_prompt(game_title: str, rulebook_context: str) -> str:
     return TEACHER_SYSTEM_PROMPT.format(game_title=game_title, rulebook_context=rulebook_context)
 
 
-def format_realtime_prompt(game_title: str, rulebook_context: str) -> str:
-    return REALTIME_SYSTEM_PROMPT.format(game_title=game_title, rulebook_context=rulebook_context)
+def format_realtime_prompt(game_title: str, rulebook_context: str, language: str = "en") -> str:
+    lang_instruction = LANGUAGE_INSTRUCTIONS.get(language, "")
+    if lang_instruction:
+        lang_instruction = "\n" + lang_instruction
+    return REALTIME_SYSTEM_PROMPT.format(
+        game_title=game_title,
+        rulebook_context=rulebook_context,
+        language_instruction=lang_instruction,
+    )
 
 
 @lru_cache(maxsize=1)

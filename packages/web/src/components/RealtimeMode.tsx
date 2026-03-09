@@ -154,7 +154,7 @@ export function RealtimeMode() {
     let fullResponse = ''
 
     try {
-      for await (const event of streamChatRealtime(game.id, text, snapshot, sessionId ?? undefined)) {
+      for await (const event of streamChatRealtime(game.id, text, snapshot, sessionId ?? undefined, i18n.language)) {
         if (event.event === 'chunk') {
           const data = JSON.parse(event.data)
           fullResponse += data.text
@@ -178,7 +178,7 @@ export function RealtimeMode() {
     } else if (isActiveRef.current) {
       setRealtimeState('listening')
     }
-  }, [game, sessionId, captureSnapshot, addMessage, updateLastMessage, setSessionId, speakText, t])
+  }, [game, sessionId, captureSnapshot, addMessage, updateLastMessage, setSessionId, speakText, t, i18n])
 
   const startRecognition = useCallback(() => {
     const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition

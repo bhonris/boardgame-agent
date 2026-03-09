@@ -106,6 +106,7 @@ async def chat_realtime(
     message: str = Form(...),
     image: UploadFile | None = File(None),
     session_id: str | None = Form(None),
+    language: str = Form("en"),
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Game).where(Game.id == game_id))
@@ -152,7 +153,7 @@ async def chat_realtime(
             else:
                 prompt = message
 
-            instructions = format_realtime_prompt(game.title, rulebook_text)
+            instructions = format_realtime_prompt(game.title, rulebook_text, language)
             async with get_realtime_agent().run_stream(
                 prompt,
                 message_history=message_history,

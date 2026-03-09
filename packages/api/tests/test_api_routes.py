@@ -21,6 +21,29 @@ from app.models.base import (
 )
 
 
+class TestFormatRealtimePrompt:
+    """Unit tests for format_realtime_prompt language support."""
+
+    def test_english_default_no_language_instruction(self):
+        from app.services.ai_service import format_realtime_prompt
+        result = format_realtime_prompt("Catan", "Some rules")
+        assert "Catan" in result
+        assert "Some rules" in result
+        assert "Thai" not in result
+
+    def test_thai_includes_language_instruction(self):
+        from app.services.ai_service import format_realtime_prompt
+        result = format_realtime_prompt("Catan", "Some rules", language="th")
+        assert "Thai" in result or "ภาษาไทย" in result
+        assert "Catan" in result
+
+    def test_unknown_language_no_instruction(self):
+        from app.services.ai_service import format_realtime_prompt
+        result = format_realtime_prompt("Catan", "Some rules", language="fr")
+        assert "Thai" not in result
+        assert "Catan" in result
+
+
 class TestHealthEndpoint:
     @pytest.mark.asyncio
     async def test_health_returns_ok(self, app_client: AsyncClient):
@@ -445,6 +468,73 @@ class TestChatRealtimeImageFormat:
             )
         assert response.status_code == 200
         assert isinstance(captured_prompt, str), "Prompt should be a plain string when no image"
+
+
+class TestChatRealtimeLanguage:
+    """Realtime mode must pass language to format_realtime_prompt so AI responds in the correct language."""
+
+    @pytest.mark.asyncio
+    async def test_realtime_thai_language_in_instructions(
+        self, app_client: AsyncClient, db: AsyncSession, sample_game
+    ):
+        """When language=th, instructions must contain Thai language directive."""
+        captured_kwargs = {}
+        mock_agent = MagicMock()
+        mock_result = MagicMock()
+
+        async def mock_stream_text(delta=True):
+            yield "OK "
+
+        mock_result.stream_text = mock_stream_text
+
+        @asynccontextmanager
+        async def mock_run_stream(*args, **kwargs):
+            captured_kwargs.update(kwargs)
+            yield mock_result
+
+        mock_agent.run_stream = mock_run_stream
+
+        with patch("app.routers.chat.get_realtime_agent", return_value=mock_agent):
+            response = await app_client.post(
+                "/api/games/catan/chat/realtime",
+                data={"message": "สวัสดี", "language": "th"},
+            )
+        assert response.status_code == 200
+
+        instructions = captured_kwargs["instructions"]
+        assert "Thai" in instructions or "ภาษาไทย" in instructions
+
+    @pytest.mark.asyncio
+    async def test_realtime_english_default_no_language_directive(
+        self, app_client: AsyncClient, db: AsyncSession, sample_game
+    ):
+        """When language is not provided (default 'en'), instructions should not contain Thai directive."""
+        captured_kwargs = {}
+        mock_agent = MagicMock()
+        mock_result = MagicMock()
+
+        async def mock_stream_text(delta=True):
+            yield "OK "
+
+        mock_result.stream_text = mock_stream_text
+
+        @asynccontextmanager
+        async def mock_run_stream(*args, **kwargs):
+            captured_kwargs.update(kwargs)
+            yield mock_result
+
+        mock_agent.run_stream = mock_run_stream
+
+        with patch("app.routers.chat.get_realtime_agent", return_value=mock_agent):
+            response = await app_client.post(
+                "/api/games/catan/chat/realtime",
+                data={"message": "Hello"},
+            )
+        assert response.status_code == 200
+
+        instructions = captured_kwargs["instructions"]
+        assert "Thai" not in instructions
+        assert "ภาษาไทย" not in instructions
 
 
 class TestVisionImageFormat:

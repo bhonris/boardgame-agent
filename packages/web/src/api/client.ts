@@ -86,11 +86,13 @@ export async function* streamChatRealtime(
   message: string,
   image?: Blob | null,
   sessionId?: string,
+  language?: string,
 ): AsyncGenerator<{ event: string; data: string }> {
   const formData = new FormData()
   formData.append('message', message)
   if (image) formData.append('image', image, 'snapshot.jpg')
   if (sessionId) formData.append('session_id', sessionId)
+  if (language) formData.append('language', language)
 
   const res = await fetch(`${API_BASE}/games/${gameId}/chat/realtime`, {
     method: 'POST',
