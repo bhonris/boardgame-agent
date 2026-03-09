@@ -31,8 +31,9 @@ export function CameraCapture() {
         videoRef.current.srcObject = stream
         setIsCameraActive(true)
       }
-    } catch {
-      setError(t('camera.cameraError'))
+    } catch (err) {
+      console.error('Camera access error:', err)
+      setError(`${t('camera.cameraError')}: ${err instanceof Error ? err.message : String(err)}`)
     }
   }, [t])
 

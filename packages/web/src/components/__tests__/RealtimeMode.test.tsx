@@ -162,7 +162,7 @@ describe('RealtimeMode', () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          'Camera access denied. Realtime mode works best with a camera, but you can still use voice.'
+          'Camera access denied. Realtime mode works best with a camera, but you can still use voice.: Permission denied'
         )
       ).toBeInTheDocument()
     })

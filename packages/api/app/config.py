@@ -8,6 +8,7 @@ class Settings(BaseSettings):
 
     pydantic_ai_model: str = "openai:gpt-5-nano"
     vision_model: str = "openai:gpt-5-nano"
+    realtime_model: str = "openai:gpt-5-mini"
 
     openai_api_key: str = ""
 

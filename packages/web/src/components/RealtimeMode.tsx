@@ -30,7 +30,6 @@ export function RealtimeMode() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const isActiveRef = useRef(false)
   const transcriptRef = useRef<HTMLDivElement>(null)
-  const shouldRestartRef = useRef(false)
   const realtimeStateRef = useRef<RealtimeState>('idle')
   const isSendingRef = useRef(false)
 
@@ -67,8 +66,9 @@ export function RealtimeMode() {
         videoRef.current.srcObject = stream
         streamRef.current = stream
       }
-    } catch {
-      setCameraError(t('realtime.cameraError'))
+    } catch (err) {
+      console.error('Camera access error:', err)
+      setCameraError(`${t('realtime.cameraError')}: ${err instanceof Error ? err.message : String(err)}`)
     }
   }, [t])
 
@@ -81,13 +81,13 @@ export function RealtimeMode() {
   const captureSnapshot = useCallback((): Blob | null => {
     if (!videoRef.current || !videoRef.current.videoWidth) return null
     const canvas = document.createElement('canvas')
-    canvas.width = 640
-    canvas.height = 480
+    canvas.width = 1280
+    canvas.height = 720
     const ctx = canvas.getContext('2d')
     if (!ctx) return null
-    ctx.drawImage(videoRef.current, 0, 0, 640, 480)
+    ctx.drawImage(videoRef.current, 0, 0, 1280, 720)
 
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.8)
     const byteString = atob(dataUrl.split(',')[1])
     const ab = new ArrayBuffer(byteString.length)
     const ia = new Uint8Array(ab)
@@ -204,36 +204,30 @@ export function RealtimeMode() {
     }
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-      // "no-speech" is normal — just restart
+      // "no-speech" and "aborted" are normal — onend will handle restart
       if (event.error === 'no-speech' || event.error === 'aborted') {
-        if (isActiveRef.current) {
-          shouldRestartRef.current = true
-        }
         return
       }
     }
 
     recognition.onend = () => {
+      // Clear ref so useEffect can detect we need a new instance
+      recognitionRef.current = null
+
       // Auto-restart if still active and in listening state
-      if (isActiveRef.current && shouldRestartRef.current) {
-        shouldRestartRef.current = false
-        // Only restart if we're in listening state (not processing/speaking)
-        if (realtimeStateRef.current === 'listening') {
-          setTimeout(() => {
-            if (isActiveRef.current) startRecognition()
-          }, 100)
-        }
+      if (isActiveRef.current && realtimeStateRef.current === 'listening') {
+        setTimeout(() => {
+          if (isActiveRef.current && !recognitionRef.current) startRecognition()
+        }, 100)
       }
     }
 
     recognitionRef.current = recognition
-    shouldRestartRef.current = true
     recognition.start()
     setRealtimeState('listening')
   }, [sendMessage, t, i18n.language])
 
   const stopRecognition = useCallback(() => {
-    shouldRestartRef.current = false
     recognitionRef.current?.stop()
     recognitionRef.current = null
   }, [])

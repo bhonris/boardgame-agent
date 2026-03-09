@@ -143,7 +143,12 @@ async def chat_realtime(
 
             # Build prompt with optional image context
             if image_content:
-                prompt = [message, image_content]
+                prompt = [
+                    "The player is showing you the current board state in the attached image. "
+                    "Use it to answer their question.\n\n"
+                    f"Player: {message}",
+                    image_content,
+                ]
             else:
                 prompt = message
 
@@ -151,7 +156,7 @@ async def chat_realtime(
             async with get_realtime_agent().run_stream(
                 prompt,
                 message_history=message_history,
-                model=settings.pydantic_ai_model,
+                model=settings.realtime_model,
                 instructions=instructions,
             ) as result:
                 async for chunk in result.stream_text(delta=True):
@@ -171,7 +176,7 @@ async def chat_realtime(
             session.id,
             MessageRole.assistant,
             full_response,
-            model_used=settings.pydantic_ai_model,
+            model_used=settings.realtime_model,
         )
         await db.commit()
 
